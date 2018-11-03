@@ -70,7 +70,19 @@
   //    get a new dog, click the button, get a new dog, etc.
   //
 
-  // TODO: your code goes here :)
+$('#generateDoggoBtn').click(clickDoggoBtn)
+
+  function clickDoggoBtn () {
+    $.getJSON('https://dog.ceo/api/breeds/image/random', recieveRandomDog)
+    $('#generateDoggoBtn').html('Generating Doggo ...').attr('disabled', 'disabled')
+    $('#doggoContainer').html(`<img id="randomDoggo"src="" />`)
+  }
+
+  function recieveRandomDog (data) {
+    console.log(data)
+    $('#randomDoggo').attr('src', data.message)
+    $('#generateDoggoBtn').html('Generate Doggo').removeAttr('disabled')
+  }
 
   //
   // Cool. Now let's kick it up a notch and allow selecting a specific breed of dog!
@@ -106,7 +118,30 @@
   //    You should now be able to view random pictures of specific dog breeds via the menu!
   //
 
-  // TODO: your code goes here :)
+  $('#selectBreedContainer').html('<select></select>')
+  $.ajax({
+    url: 'https://dog.ceo/api/breeds/list',
+    success: getDogBreeds
+  })
+
+  function getDogBreeds (data) {
+    console.log(data)
+    $(data.message).each(function(index) {
+      $('select').append(`<option value="${data.message[index]}">${data.message[index]}</option>`)
+    })
+  }
+
+  $('select').on('change', function(){
+    $('#selectBreedContainer').append(`<img id="breedDoggo" src="" />`)
+    $.ajax({
+      url: `https://dog.ceo/api/breed/${this.value}/images/random`,
+      success: createDogBreed
+    })
+  })
+
+  function createDogBreed (data) {
+    $('#breedDoggo').attr('src', data.message)
+  }
 
   //
   // Excellent work!
